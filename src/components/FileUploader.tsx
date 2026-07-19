@@ -43,15 +43,15 @@ export default function FileUploader({ onDataParsed }: FileUploaderProps) {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
+    <div className="flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 dark:border-zinc-800 rounded-xl bg-gray-50 dark:bg-zinc-900/50 hover:bg-gray-100 dark:hover:bg-zinc-900 transition-colors">
       <label className="flex flex-col items-center justify-center w-full h-32 cursor-pointer">
         <div className="flex flex-col items-center justify-center pt-5 pb-6">
           <span className="text-3xl mb-2">📁</span>
-          <p className="mb-2 text-sm text-gray-500">
+          <p className="mb-2 text-sm text-gray-500 dark:text-zinc-400">
             <span className="font-semibold">Clique para fazer upload</span> ou
             arraste seu extrato bancário
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-zinc-500">
             Apenas arquivos .csv do Nubank, Mercado Pago, etc.
           </p>
         </div>
@@ -65,13 +65,15 @@ export default function FileUploader({ onDataParsed }: FileUploaderProps) {
       </label>
 
       {fileName && (
-        <p className="mt-3 text-sm text-emerald-600 font-medium">
+        <p className="mt-3 text-sm text-emerald-600 dark:text-emerald-400 font-medium">
           ✅ Arquivo carregado com sucesso: {fileName}
         </p>
       )}
 
       {error && (
-        <p className="mt-3 text-sm text-rose-500 font-medium">❌ {error}</p>
+        <p className="mt-3 text-sm text-rose-500 dark:text-rose-400 font-medium">
+          ❌ {error}
+        </p>
       )}
     </div>
   );
