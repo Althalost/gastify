@@ -1,12 +1,10 @@
-// src/components/FileUploader.tsx
-"use client"; // Indica para o Next.js que este componente usa interatividade no lado do cliente
-
+"use client";
 import React, { useState } from "react";
 import { parseCSV } from "../lib/parser";
 import { Expense } from "../types";
 
 interface FileUploaderProps {
-  onDataParsed: (expenses: Expense[]) => void;
+  onDataParsed: (data: Expense[], fileName: string) => void;
 }
 
 export default function FileUploader({ onDataParsed }: FileUploaderProps) {
@@ -33,7 +31,9 @@ export default function FileUploader({ onDataParsed }: FileUploaderProps) {
 
       try {
         const parsedExpenses = parseCSV(text);
-        onDataParsed(parsedExpenses);
+        const uploadedName = file.name;
+
+        onDataParsed(parsedExpenses, uploadedName);
       } catch (err) {
         setError("Ocorreu un erro ao processar a estrutura do arquivo CSV.");
       }
