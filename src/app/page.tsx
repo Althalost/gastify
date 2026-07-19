@@ -2,26 +2,28 @@
 
 import React, { useState } from "react";
 import FileUploader from "../components/FileUploader";
+import FileIndicator from "../components/FileIndicator"; // 🌟 Importa o novo componente
 import ExpenseChart from "../components/ExpenseChart";
-import Footer from "../components/Footer";
 import ExpenseBreakdown from "../components/ExpenseBreakdown";
 import ThemeToggle from "../components/ThemeToggle";
+import Footer from "../components/Footer";
 import { formatDataForChart, ChartData } from "../lib/formatter";
 import { Expense } from "../types";
 
 export default function HomePage() {
   const [chartData, setChartData] = useState<ChartData[]>([]);
-
   const [highestExpense, setHighestExpense] = useState<Expense | null>(null);
+  const [currentFileName, setCurrentFileName] = useState<string>("");
 
-  const handleDataParsed = (data: Expense[]) => {
+  const handleDataParsed = (data: Expense[], fileName: string) => {
     const realExpenses = data.filter((e) => e.amount < 0);
 
     if (realExpenses.length === 0) {
-      setChartData([]);
-      setHighestExpense(null);
+      handleClearFile();
       return;
     }
+
+    setCurrentFileName(fileName);
 
     const topExpense = realExpenses.reduce(
       (max, current) => (current.amount < max.amount ? current : max),
@@ -32,6 +34,12 @@ export default function HomePage() {
 
     const formatted = formatDataForChart(data);
     setChartData(formatted);
+  };
+
+  const handleClearFile = () => {
+    setChartData([]);
+    setHighestExpense(null);
+    setCurrentFileName("");
   };
 
   return (
@@ -46,7 +54,7 @@ export default function HomePage() {
         <ThemeToggle />
       </div>
 
-      <div className="w-full max-w-2xl space-y-6">
+      <div className="w-full max-w-2xl space-y-6 flex-1">
         <header className="text-center md:text-left mb-2">
           <p className="text-gray-500 dark:text-zinc-400 text-sm md:text-base">
             Faça o upload do seu extrato bancário (.csv) para analisar seus
@@ -54,7 +62,20 @@ export default function HomePage() {
           </p>
         </header>
 
-        <FileUploader onDataParsed={handleDataParsed} />
+        <div className="space-y-4">
+          {currentFileName && (
+            <FileIndicator
+              fileName={currentFileName}
+              onClear={handleClearFile}
+            />
+          )}
+
+          <FileUploader
+            onDataParsed={(data, name) =>
+              handleDataParsed(data, name || "extrato.csv")
+            }
+          />
+        </div>
 
         {chartData.length > 0 && (
           <div className="space-y-6">
@@ -84,11 +105,11 @@ export default function HomePage() {
             )}
 
             <ExpenseChart data={chartData} />
-
             <ExpenseBreakdown data={chartData} />
           </div>
         )}
       </div>
+
       <Footer />
     </main>
   );
